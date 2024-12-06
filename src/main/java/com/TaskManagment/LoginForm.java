@@ -167,8 +167,8 @@ public class LoginForm
         //      Leo el archivo users.json y creo una lista de usuarios
         try ( FileReader reader = new FileReader(userfile) ){
           // Leer el archivo y convertirlo en un List<User>
-          Type userListType = new TypeToken<List<User>>(){ }.getType();
-          usersDB = gson.fromJson(reader, userListType);
+          Type usersType = new TypeToken<List<User>>(){ }.getType();
+          usersDB = gson.fromJson(reader, usersType);
           System.out.println("Se cargo lista de usuarios registrados");
         }catch ( FileNotFoundException e ){
           e.printStackTrace();

@@ -1,13 +1,13 @@
 package com.TaskManagment;
 
-public class Products
+public class Product
 {
   private String id;
   private String model;
   private String brand;
   private int stock;
   
-  public Products(String id, String model, String brand, int stock)
+  public Product(String id, String model, String brand, int stock)
   {
     this.id = id;
     this.model = model;
