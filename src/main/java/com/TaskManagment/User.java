@@ -2,15 +2,17 @@ package com.TaskManagment;
 
 public class User
 {
+  private int userId;
   private String username;
   private String password;
   private String role;
   
-  public User (String username, String password, String role)
+  public User (String username, String password, String role, int userId)
   {
     this.username = username;
     this.password = password;
     this.role = role;
+    this.userId = userId;
   }
   
   public String getUsername()
@@ -27,4 +29,6 @@ public class User
   {
     return role;
   }
+  
+  public int getUserId() { return userId; }
 }
