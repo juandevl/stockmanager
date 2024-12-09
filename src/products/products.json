@@ -63,16 +63,5 @@
   {"id": "J8R3", "model": "LG UHD 4K 65\"", "brand": "LG", "stock": 38},
   {"id": "K9S4", "model": "Vizio 65\" 4K", "brand": "Vizio", "stock": 47},
   {"id": "L0T5", "model": "Sony Bravia 4K 55\"", "brand": "Sony", "stock": 25},
-  {"id": "M1U6", "model": "TCL 50\" 4K", "brand": "TCL", "stock": 32},
-  {"id": "N2V7", "model": "Philips 4K 43\"", "brand": "Philips", "stock": 15},
-  {"id": "O3W8", "model": "Sharp 4K 55\"", "brand": "Sharp", "stock": 60},
-  {"id": "P4X9", "model": "Samsung The Frame 65\"", "brand": "Samsung", "stock": 8},
-  {"id": "Q5Y0", "model": "LG NanoCell 75 Series", "brand": "LG", "stock": 12},
-  {"id": "R6Z1", "model": "Hisense 55\" 4K", "brand": "Hisense", "stock": 25},
-  {"id": "S7A2", "model": "Vizio V-Series 70\"", "brand": "Vizio", "stock": 11},
-  {"id": "T8B3", "model": "JBL Quantum 800", "brand": "JBL", "stock": 60},
-  {"id": "U9C4", "model": "Sony WH-1000XM4", "brand": "Sony", "stock": 40},
-  {"id": "V0D5", "model": "Bose QuietComfort 35 II", "brand": "Bose", "stock": 35},
-  {"id": "W1E6", "model": "Sennheiser Momentum 3", "brand": "Sennheiser", "stock": 22},
-  {"id": "X2F7", "model": "Beats Solo Pro", "brand": "Beats", "stock": 50}
+  {"id": "M1U6", "model": "TCL 50\" 4K", "brand": "TCL", "stock": 32}
 ]

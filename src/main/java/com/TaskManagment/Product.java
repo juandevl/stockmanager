@@ -23,5 +23,17 @@ public class Product
   
   public int getStock(){ return stock; }
   
+  public Object[] toObject(){
+    Object [] obj =  {this.id, this.model, this.brand, this.stock};
+    return obj;
+  }
+  
+  @Override
+  public String toString()
+  {
+    return "Product: {" + "id='" + id + '\'' + ", model='" + model + '\'' + ", brand='" + brand + '\'' + ", stock=" + stock + '}';
+  }
+  
+  
   
 }

@@ -27,7 +27,7 @@ public class LoginForm
   
   public LoginForm () {
     
-    frame = new JFrame ("LoginForm");
+    frame = new JFrame ("Log in");
     frame.setContentPane (loginPanel);
     frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
     frame.pack ();
@@ -49,14 +49,12 @@ public class LoginForm
         if ( logInUser(username,password) ){
           System.out.println("Ingreso de usuario " + username);
           frame.dispose();
+          JOptionPane.showMessageDialog(frame, "Bienvenido " + username, "Login Exitoso", JOptionPane.INFORMATION_MESSAGE);
           Main.openMainForm(); //Apertura de formulario principal
-//          JOptionPane.showMessageDialog(frame, "Bienvenido " + username, "Login Exitoso",
-//                  JOptionPane.INFORMATION_MESSAGE);
         }
         else {
-//          JOptionPane.showMessageDialog(frame, "Usuario o contraseña incorrecta. Intente nuevamente.",
-//                  "Error de Login", JOptionPane.ERROR_MESSAGE);
-          System.out.println("Datos invalidos");
+          JOptionPane.showMessageDialog(frame, "Usuario o contraseña incorrecta. Intente nuevamente.", "Error de Login", JOptionPane.ERROR_MESSAGE);
+//          System.out.println("Datos invalidos");
         }
         
       }
