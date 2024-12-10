@@ -23,11 +23,8 @@ public class Product
   
   public int getStock(){ return stock; }
   
-  public Object[] toObject(){
-    Object [] obj =  {this.id, this.model, this.brand, this.stock};
-    return obj;
-  }
-  
+  public void setStock(int stock){ this.stock = stock; }
+    
   @Override
   public String toString()
   {

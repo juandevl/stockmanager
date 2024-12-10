@@ -4,8 +4,7 @@ import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
 
 import javax.swing.*;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
+import java.awt.event.*;
 import java.io.*;
 import java.lang.reflect.Type;
 import java.util.*;
@@ -21,7 +20,6 @@ public class LoginForm
   private JButton btnLogin;
   private JButton btnCancel;
   private JLabel lblTitle;
-  private JButton btnRegister;
   private static List<User> usersDB = new ArrayList<>();
   private static final String usersFile = "src/users/users.json";
   
@@ -44,17 +42,17 @@ public class LoginForm
       {
         String username = txtUsername.getText();
         String password = new String(txtPassword.getPassword());
-        /*System.out.println ("user: " + username);
-        System.out.println ("pass: " + password);*/
+        
         if ( logInUser(username,password) ){
           System.out.println("Ingreso de usuario " + username);
           frame.dispose();
           JOptionPane.showMessageDialog(frame, "Bienvenido " + username, "Login Exitoso", JOptionPane.INFORMATION_MESSAGE);
-          Main.openMainForm(); //Apertura de formulario principal
+/*          Inicializo formulario principal         */
+          MainForm.openMainForm();
+          
         }
         else {
           JOptionPane.showMessageDialog(frame, "Usuario o contraseña incorrecta. Intente nuevamente.", "Error de Login", JOptionPane.ERROR_MESSAGE);
-//          System.out.println("Datos invalidos");
         }
         
       }
@@ -70,19 +68,29 @@ public class LoginForm
           fr.dispose ();
       }
     });
-//    btnRegister.addActionListener(new ActionListener(){
-//      @Override
-//      public void actionPerformed(ActionEvent e)
-//      {
-////        User user = new User(txtUsername.getText(), new String(txtPassword.getPassword()), "admin");
-////        signInUser(user);
-//
-//      }
-//    });
     
-//  Oculto boton de registro
-    btnRegister.setVisible(false);
+    txtUsername.addKeyListener(new KeyAdapter(){
+      @Override
+      public void keyPressed(KeyEvent e)
+      {
+        if ( e.getKeyCode() == KeyEvent.VK_ENTER ){
+          txtPassword.requestFocus();
+        }
+      }
+    });
+    
+    txtPassword.addKeyListener(new KeyAdapter(){
+      @Override
+      public void keyPressed(KeyEvent e)
+      {
+        if ( e.getKeyCode() == KeyEvent.VK_ENTER ){
+          btnLogin.doClick();
+        }
+      }
+    });
+    
     main(null);
+    
   }
   
   public static void main (String[] args)
