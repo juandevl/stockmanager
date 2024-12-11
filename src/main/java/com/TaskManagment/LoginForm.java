@@ -112,7 +112,6 @@ public class LoginForm
 //  Serializador para convertir el objeto User en texto JSON
     Gson gson = new Gson();
     
-    
 //  Una vez creado, creo el archivo donde almaceno los registros de usuarios
     File file = new File(filefinal);
     if(!file.exists()){
@@ -131,13 +130,10 @@ public class LoginForm
 //      Leo el archivo users.json y creo una lista de usuarios
         try ( FileReader reader = new FileReader(file) ){
           // Leer el archivo y convertirlo en un List<User>
-          Type userListType = new TypeToken<List<User>>(){ }.getType();
-          users = gson.fromJson(reader, userListType);
-          reader.close();
-        }catch ( FileNotFoundException e ){
+          User[] aux = gson.fromJson(reader, User[].class);
+          users = Arrays.asList(aux);
+        }catch ( Exception e ){
           e.printStackTrace();
-        }catch ( IOException e ){
-          throw new RuntimeException(e);
         }
       }
       
@@ -163,30 +159,26 @@ public class LoginForm
     return false;
   }
   
-  private static void setUsersDB(){
+  private static void setUsersDB()
+  {
     File userfile = new File(usersFile);
-    Gson gson = new Gson(); //Objeto serializador de json
+    Gson gson     = new Gson(); //Objeto serializador de json
     
-    if(userfile.exists() && userfile.isFile()){
+    if ( userfile.exists() && userfile.isFile() ){
       //    Si el archivo existe y contiene informacion
-      if(userfile.length() != 0){
+      if ( userfile.length() != 0 ){
         //      Leo el archivo users.json y creo una lista de usuarios
         try ( FileReader reader = new FileReader(userfile) ){
           // Leer el archivo y convertirlo en un List<User>
-          Type usersType = new TypeToken<List<User>>(){ }.getType();
-          usersDB = gson.fromJson(reader, usersType);
-          System.out.println("Se cargo lista de usuarios registrados");
-        }catch ( FileNotFoundException e ){
+          User[] aux = gson.fromJson(reader, User[].class);
+          usersDB = Arrays.asList(aux);
+          //          System.out.println("Se cargo lista de usuarios registrados");
+        }
+        catch ( Exception e ){
           e.printStackTrace();
-        }catch ( IOException e ){
-          throw new RuntimeException(e);
         }
       }
-      return;
     }
-    
-    
   }
-  
   
 }
