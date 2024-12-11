@@ -7,6 +7,7 @@ import javax.swing.event.DocumentEvent;
 import javax.swing.event.DocumentListener;
 import javax.swing.table.TableColumn;
 import java.awt.event.*;
+import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileReader;
 import java.util.ArrayList;
@@ -26,9 +27,9 @@ public class MainForm
   private JScrollPane dispatchScrollPane;
   private JTable dispatchTable;
   private JPanel btnPanel;
-  private JLabel lblTitleFilter;
   private JButton btnDelete;
   private JSeparator horizLine;
+  private JButton btnFinish;
   private static ProductTableModel productTableModel;
   private static ProductTableModel dispatchTableModel;
   private static List<Product> productsDB = new ArrayList<>();
@@ -41,7 +42,6 @@ public class MainForm
     initialize();
     
     /* #### Listeners #### */
-    
     txtFilter.getDocument().addDocumentListener(new DocumentListener(){
       @Override
       public void insertUpdate(DocumentEvent e)
@@ -50,7 +50,9 @@ public class MainForm
       }
       
       @Override
-      public void removeUpdate(DocumentEvent e){}
+      public void removeUpdate(DocumentEvent e){
+        productFilter();
+      }
       
       @Override
       public void changedUpdate(DocumentEvent e){}
@@ -76,6 +78,19 @@ public class MainForm
         }
       }
     });
+    btnFinish.addActionListener(new ActionListener(){
+      @Override
+      public void actionPerformed(ActionEvent e)
+      {
+        try{
+          dispatchTable.print();
+        }
+        catch ( PrinterException ex ){
+          JOptionPane.showMessageDialog(frame, "Error al imprimir", "Error con impresora", JOptionPane.ERROR_MESSAGE);
+          ex.printStackTrace();
+        }
+      }
+    });
   }
   
   private static void setProducts(){
@@ -95,7 +110,6 @@ public class MainForm
     }
   }
   
-  
 //   Método para ajustar el ancho de las columnas al máximo del contenido de la celda
   private static void adjustColumnWidths(JTable table) {
     for (int col = 0; col < table.getColumnCount()-1; col++) {
@@ -113,8 +127,7 @@ public class MainForm
     }
   }
   
-  public static void openMainForm()
-  {
+  public static void openMainForm(){
     System.out.println("static openMainForm");
     // Inicializo lista de productos, obtenida de archivo products.json
     Thread t = new Thread( MainForm::setProducts );
@@ -130,7 +143,6 @@ public class MainForm
   }
   
   private void productFilter(){
-    
     String str = txtFilter.getText().trim().toLowerCase();
     if ( str.length() <= 1 ){
       productTableModel.setProducts(productsDB);
@@ -156,7 +168,6 @@ public class MainForm
   }
   
   public void initialize(){
-  
     productTableModel = new ProductTableModel(productsDB);
     dispatchTableModel = new ProductTableModel(productDispatch);
     frame = new JFrame("Stock Manager");
@@ -197,11 +208,25 @@ public class MainForm
           
           //            Valido si la cantidad esta en el rango permitido
           if ( quantity > 0 && quantity <= stock){
+            /*Verifico si el item ya se encuentra en el dispatch*/
+            boolean exist = false;
+            for ( Product product : productDispatch ){
+              if ( product.getId().equals(id) ) {
+                exist = true;
+                product.setStock(product.getStock()+quantity); // Actualizo el stock
+                dispatchTableModel.fireTableDataChanged(); // Informo que el model del dispatch se actualizo
+                break;
+              }
+            }
+            
             //Cargo nuevo producto a la tabla dispatch
-            Product p = new Product(id, model, brand, quantity);
-            productDispatch.add(p);
-            dispatchTableModel.setProducts(productDispatch);
-            dispatchTableModel.fireTableDataChanged();
+            if ( !exist ){
+              Product p = new Product(id, model, brand, quantity);
+              productDispatch.add(p);
+              dispatchTableModel.setProducts(productDispatch);
+              dispatchTableModel.fireTableDataChanged();
+            }
+            
             //Actualizo la tabla de productos original
             for ( Product product : productsDB ){
               if ( product.getId().equals(id) ){
@@ -226,7 +251,6 @@ public class MainForm
   }
   
   /* Metodo para remover elemento del dispatch*/
-  
   private void removeFromDispatch(){
     int index = dispatchTable.getSelectedRow();
     if ( index != -1 ){
@@ -252,5 +276,6 @@ public class MainForm
       JOptionPane.showMessageDialog(frame, "Error al eliminar", "ERROR!", JOptionPane.ERROR_MESSAGE);
     }
   }
+  
   
 }
