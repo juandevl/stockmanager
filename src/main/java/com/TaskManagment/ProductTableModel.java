@@ -5,10 +5,11 @@ import java.util.List;
 
 public class ProductTableModel extends AbstractTableModel {
   private List<Product> products;
-  private String [] columnNames = {"ID", "Modelo", "Marca", "Stock disponible"};
+  private String [] columnNames;
   
-  public ProductTableModel(List<Product> products) {
+  public ProductTableModel(List<Product> products, String []columnNames) {
     this.products = products;
+    this.columnNames = columnNames;
   }
   
   public void setProducts(List<Product> products)

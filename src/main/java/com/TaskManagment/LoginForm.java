@@ -1,12 +1,10 @@
 package com.TaskManagment;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
 import javax.swing.*;
 import java.awt.event.*;
 import java.io.*;
-import java.lang.reflect.Type;
 import java.util.*;
 
 public class LoginForm
@@ -24,17 +22,9 @@ public class LoginForm
   private static final String usersFile = "src/users/users.json";
   
   public LoginForm () {
+    initialize(); //Inicializo los datos del LoginForm
     
-    frame = new JFrame ("Log in");
-    frame.setContentPane (loginPanel);
-    frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
-    frame.pack ();
-    frame.setLocationRelativeTo (null);
-    frame.setResizable(false);
-    frame.setVisible (true);
-    
-    setUsersDB(); //Seteo la lista de usuarios registrados
-    
+    /*#### Listener ####*/
   // Accion de click en login
     btnLogin.addActionListener (new ActionListener () {
       @Override
@@ -89,67 +79,29 @@ public class LoginForm
       }
     });
     
-    main(null);
+  }
+  
+  public void initialize(){
+    frame = new JFrame ("Log in");
+    frame.setContentPane (loginPanel);
+    frame.setDefaultCloseOperation (JFrame.EXIT_ON_CLOSE);
+    frame.pack ();
+    frame.setLocationRelativeTo (null);
+    frame.setResizable(false);
+    frame.setVisible (true);
+    
+    // Inicializo lista de usuarios registrados, obtenida de archivo users.json
+    Thread t = new Thread( LoginForm::setUsersDB );
+    t.start();
+    try{
+      t.join();
+    }
+    catch ( Exception e ){
+      e.printStackTrace();
+    }
     
   }
   
-  public static void main (String[] args)
-  {
-  }
-  
-//  Metodo para registar usuario en archivo users.json
-  public void signInUser(User user){
-    String path = "src/users/";
-    String filename = "users.json";
-    String filefinal = path+filename;
-    List<User> users = new ArrayList<>();
-//    Si no existe el directorio users, lo creo
-    File dir = new File(path);
-    if (!dir.exists()){
-      dir.mkdir();
-    }
-    
-//  Serializador para convertir el objeto User en texto JSON
-    Gson gson = new Gson();
-    
-//  Una vez creado, creo el archivo donde almaceno los registros de usuarios
-    File file = new File(filefinal);
-    if(!file.exists()){
-      try{
-        file.createNewFile();
-        System.out.println("Se creo el archivo " + filefinal);
-      }
-      catch ( IOException e ){
-        throw new RuntimeException(e);
-      }
-    }
-    
-    if(file.exists() && !file.isDirectory()){
-//    Si el archivo existe y contiene informacion
-      if(file.length() != 0){
-//      Leo el archivo users.json y creo una lista de usuarios
-        try ( FileReader reader = new FileReader(file) ){
-          // Leer el archivo y convertirlo en un List<User>
-          User[] aux = gson.fromJson(reader, User[].class);
-          users = Arrays.asList(aux);
-        }catch ( Exception e ){
-          e.printStackTrace();
-        }
-      }
-      
-//    Agrego el nuevo usuario a la lista
-      users.add(user);
-      
-      try( FileWriter fw = new FileWriter(file) ){
-        gson.toJson(users, fw);
-      }catch ( IOException e ){
-        e.printStackTrace();
-      }
-        
-    }
-    
-  }
- 
   public boolean logInUser(String username, String password){
     for( User u : usersDB){
       if ( u.getUsername().equals(username) && u.getPassword().equals(password) ){

@@ -70,12 +70,18 @@ public class MainForm
       @Override
       public void actionPerformed(ActionEvent e)
       {
-        int res = JOptionPane.showConfirmDialog(frame, "¿Desea eliminar el item?", "Confirmar",
-              JOptionPane.YES_OPTION);
-        /*Si res == 0, se confirma la eliminacion, 1 si se cancela.*/
-        if ( res == 0 ){
-          removeFromDispatch();
+        // Valido si hay filas en la tabla
+        if ( dispatchTable.getRowCount() != 0 ){
+          int res = JOptionPane.showConfirmDialog(frame, "¿Desea eliminar el item?", "Confirmar",
+                JOptionPane.YES_OPTION);
+          /*Si res == 0, se confirma la eliminacion, 1 si se cancela.*/
+          if ( res == 0 ){
+            removeFromDispatch();
+          }
+        }else{
+          JOptionPane.showMessageDialog(frame, "La tabla se encuentra vacía", "Error", JOptionPane.ERROR_MESSAGE);
         }
+        
       }
     });
     btnFinish.addActionListener(new ActionListener(){
@@ -93,6 +99,7 @@ public class MainForm
     });
   }
   
+  /*Metodo para setear los productos*/
   private static void setProducts(){
     File fileProducts = new File(pathProducts);
     if(fileProducts.exists() && fileProducts.isFile()){
@@ -110,7 +117,7 @@ public class MainForm
     }
   }
   
-//   Método para ajustar el ancho de las columnas al máximo del contenido de la celda
+//   Metodo para ajustar el ancho de las columnas al máximo del contenido de la celda
   private static void adjustColumnWidths(JTable table) {
     for (int col = 0; col < table.getColumnCount()-1; col++) {
       int maxWidth = 0;
@@ -128,7 +135,6 @@ public class MainForm
   }
   
   public static void openMainForm(){
-    System.out.println("static openMainForm");
     // Inicializo lista de productos, obtenida de archivo products.json
     Thread t = new Thread( MainForm::setProducts );
     t.start();
@@ -141,7 +147,7 @@ public class MainForm
     
     SwingUtilities.invokeLater(() -> new MainForm());
   }
-  
+  /*Metodo para filtrar los productos de la tabla*/
   private void productFilter(){
     String str = txtFilter.getText().trim().toLowerCase();
     if ( str.length() <= 1 ){
@@ -149,6 +155,7 @@ public class MainForm
       productTableModel.fireTableDataChanged();
       return;
     }
+    //Utilizo stream para filtrar los elementos, ya que crea un duplicado de la lista original
     productsFilter = productsDB
                              .stream()
                              .filter(p ->
@@ -161,15 +168,15 @@ public class MainForm
       productTableModel.setProducts(productsFilter);
       productTableModel.fireTableDataChanged();
     }else {
-//      productTableModel.setProducts(productsDB);
       JOptionPane.showMessageDialog(frame, "No se encuentró ningún producto.");
     }
     
   }
   
+  /*Metodo para inicializar los datos del form*/
   public void initialize(){
-    productTableModel = new ProductTableModel(productsDB);
-    dispatchTableModel = new ProductTableModel(productDispatch);
+    productTableModel = new ProductTableModel(productsDB, new String[]{"ID", "Modelo", "Marca", "Stock disponible"});
+    dispatchTableModel = new ProductTableModel(productDispatch, new String[]{"ID", "Modelo", "Marca", "Stock"});
     frame = new JFrame("Stock Manager");
     stockTable.setAutoCreateColumnsFromModel(true);
     stockTable.setModel(productTableModel);
@@ -206,7 +213,7 @@ public class MainForm
           String brand = (String) stockTable.getValueAt(index,2);
           int stock = (int) stockTable.getValueAt(index,3);
           
-          //            Valido si la cantidad esta en el rango permitido
+          //Valido si la cantidad esta en el rango permitido
           if ( quantity > 0 && quantity <= stock){
             /*Verifico si el item ya se encuentra en el dispatch*/
             boolean exist = false;
@@ -218,15 +225,13 @@ public class MainForm
                 break;
               }
             }
-            
             //Cargo nuevo producto a la tabla dispatch
             if ( !exist ){
               Product p = new Product(id, model, brand, quantity);
               productDispatch.add(p);
               dispatchTableModel.setProducts(productDispatch);
-              dispatchTableModel.fireTableDataChanged();
+              dispatchTableModel.fireTableDataChanged(); //Informo al model que la tabla se actualizo
             }
-            
             //Actualizo la tabla de productos original
             for ( Product product : productsDB ){
               if ( product.getId().equals(id) ){
@@ -238,6 +243,7 @@ public class MainForm
             
             JOptionPane.showMessageDialog(null, "Producto agregado correctamente");
           }else{
+            //Si no se ingreso una cantidad >0 && <= stock, muestro mensaje de error
             JOptionPane.showMessageDialog(null, "Ingrese una cantidad válida", "Invalid input", JOptionPane.ERROR_MESSAGE);
           }
         } catch ( NumberFormatException ex ){
@@ -246,6 +252,7 @@ public class MainForm
         }
       }
     } else {
+      //Si no se selecciono producto de la tabla, genero pop up de error
       JOptionPane.showMessageDialog(null, "Seleccione un producto", "Error", JOptionPane.ERROR_MESSAGE);
     }
   }
@@ -258,8 +265,7 @@ public class MainForm
       String model = (String) dispatchTable.getValueAt(index,1);
       String brand = (String) dispatchTable.getValueAt(index,2);
       int stock = (int) dispatchTable.getValueAt(index,3);
-    
-//      Product p = new Product(id, model, brand, stock);
+      
       dispatchTableModel.removeProduct(id);
       dispatchTableModel.fireTableDataChanged();
       
@@ -273,7 +279,7 @@ public class MainForm
       }
       JOptionPane.showMessageDialog(null, "Se elimino producto");
     }else{
-      JOptionPane.showMessageDialog(frame, "Error al eliminar", "ERROR!", JOptionPane.ERROR_MESSAGE);
+      JOptionPane.showMessageDialog(frame, "No se selecciono ningun item", "ERROR!", JOptionPane.ERROR_MESSAGE);
     }
   }
   
