@@ -120,11 +120,11 @@ public class LoginForm
       //    Si el archivo existe y contiene informacion
       if ( userfile.length() != 0 ){
         //      Leo el archivo users.json y creo una lista de usuarios
+        /*Bloque try con resources, cierra el FileReader al finalizar el bloque try-catch*/
         try ( FileReader reader = new FileReader(userfile) ){
           // Leer el archivo y convertirlo en un List<User>
           User[] aux = gson.fromJson(reader, User[].class);
           usersDB = Arrays.asList(aux);
-          //          System.out.println("Se cargo lista de usuarios registrados");
         }
         catch ( Exception e ){
           e.printStackTrace();

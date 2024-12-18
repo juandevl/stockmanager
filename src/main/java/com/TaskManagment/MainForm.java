@@ -104,8 +104,8 @@ public class MainForm
     File fileProducts = new File(pathProducts);
     if(fileProducts.exists() && fileProducts.isFile()){
       if(fileProducts.length() != 0){
-        try{
-          FileReader reader = new FileReader(fileProducts);
+        /*Bloque try con resources, realiza el cierre del archivo FileReader al terminar el bloque*/
+        try(FileReader reader = new FileReader(fileProducts)){
           Gson gson = new Gson();
           Product[] aux = gson.fromJson(reader, Product[].class);
           productsDB = Arrays.asList(aux);
